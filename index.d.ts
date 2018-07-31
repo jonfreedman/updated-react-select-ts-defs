@@ -65,6 +65,11 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     className?: string;
 
     /**
+     * classNamePrefix attribute used as a base for inner component classNames
+     */
+    classNamePrefix?: string | null;
+
+    /**
      * Close the select menu when the user selects an option
      * @default true
      */
