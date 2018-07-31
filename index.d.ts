@@ -1,31 +1,37 @@
-// Type definitions for react-select 2.0
+//  Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
-// TypeScript Version: 3.0
+// TypeScript Version: 2.9
 import * as React from 'react';
 
-
-export default class ReactSelectClass<TValue = OptionValues> extends React.Component<ReactSelectProps<TValue>>{
+export default class ReactSelectClass<TValue> extends React.Component<ReactSelectProps<TValue>> {
     focus(): void;
     blur() : void;
 }
 
-export interface NoOptionArg{
+export interface NoOptionArg {
     inputValue: string;
 }
 
+export type Action = 'select-option' | 'deselect-option' | 'remove-value' | 'pop-value' | 'set-value' | 'clear' | 'create-option';
 
 // Handlers
 export type NoOptionsHandler = (arg: NoOptionArg) => string;
 export type OnBlurHandler = React.FocusEventHandler<HTMLElement>;
+export type OnChangeHandler<TValue> = (newValue: TValue, actionMeta: Action) => void;
 export type OnFocusHandler = React.FocusEventHandler<HTMLElement>;
-export type OnInputChangeHandler = (inputValue: string) => string;
+export type OnInputChangeHandler = (inputValue: string, actionMeta: Action) => string;
 export type OnKeyDownHandler = React.KeyboardEventHandler<HTMLElement>;
 export type OnMenuCloseHandler = () => void;
 export type OnMenuOpenHandler = () => void;
 export type OnMenuScrollToBottomHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
 export type OnMenuScrollToTopHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
 
-export interface ReactSelectProps<TValue = OptionValues> extends React.Props<ReactSelectClass<TValue>>{
+// Options Handling
+export type OptionFilter<TValue> = (option: TValue, inputValue: string) => boolean;
+export type OptionFormatter<TValue> = (option: TValue, context: any) => Node;
+export type OptionPredicate<TValue> = (option: TValue, value: Options<TValue>) => boolean;
+
+export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<TValue>> {
     /**
      * aria label (for assistive tech)
      */
@@ -102,6 +108,21 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     controlShouldRenderValue?: boolean;
 
     /**
+     * initial value displayed to user
+     */
+    defaultValue?: TValue;
+
+    /**
+     * string initially displayed to user
+     */
+    defaultInputValue?: string;
+
+    /**
+     * True if menu should be open when mounted
+     */
+    defaultMenuIsOpen?: boolean;
+
+    /**
      * delimiter to use to join multiple values
      * @default ","
      */
@@ -113,15 +134,29 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
     escapeClearsValue?: boolean;
 
-    // TODO: Expose filter options
+    /**
+     * Function to filter options based on user input
+     */
+    filterOption?: OptionFilter<TValue>;
 
     // TODO: Expose Format Group Label
 
-    // TODO: Expose Format Option Label
+    /**
+     * Function to render option
+     */
+    formatOptionLabel?: OptionFormatter<TValue>;
 
-    // TODO: Expose getOptionLabel
+    /**
+     * Function to stringify option as a label, use if your option shape does not contain a label property
+     * @param option Option value
+     */
+    getOptionLabel?: (option: TValue) => string;
 
-    // TODO: Expose getOptionValue
+    /**
+     * Function to stringify option as a value, use if your option shape does not contain a value property
+     * @param option Option value
+     */
+    getOptionValue?: (option: TValue) => string;
 
     /**
      * Hide the selected option from the menu
@@ -140,7 +175,6 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     * The value of the search input
     */
     inputValue?: string;
-
 
     /**
    * The id of the search input
@@ -171,11 +205,9 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
     isLoading?: boolean;
 
-    // TODO: Expose isOptionDisabled
+    isOptionDisabled?: OptionPredicate<TValue>;
 
-    // TODO: Expose isOptionDisabled
-
-    // TODO: Expose isOptionSelected
+    isOptionSelected?: OptionPredicate<TValue>;
 
     /**
      * Support multiple selected options
@@ -249,7 +281,10 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
     onBlur?: OnBlurHandler;
 
-    // TODO: Add onChange
+    /**
+     * subscribe to change events
+     */
+    onChange?: OnChangeHandler<TValue>;
 
     /**
      * onFocus handler: function (event) {}
@@ -331,14 +366,21 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     tabSelectsValue?: boolean;
 
     /**
+     * TODO: are the raw types still valid?
      * initial field value
      */
-     value?: Option<TValue> | Options<TValue> | string | string[] | number | number[] | boolean;
+     value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
 }
 
+// Advanced
+export interface FilterConfig<TValue> {
+    ignoreCase: boolean;
+    ignoreAccents: boolean;
+    stringify?: (value: TValue) => string,
+    trim: boolean;
+    matchFrom: 'start' | 'any';
+}
 
-export type OptionValues = string | number | boolean;
+export function createFilter<TValue>(config: FilterConfig<TValue>): OptionFilter<TValue>
 
-export type Options<TValue = OptionValues> = Array<Option<TValue>>;
-
-export interface Option<TValue = OptionValues> { }
+export type Options<TValue> = Array<TValue>;
