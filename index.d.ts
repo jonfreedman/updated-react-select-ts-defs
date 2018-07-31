@@ -215,6 +215,12 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     pageSize?: number;
 
     /**
+     * Placeholder text for the select value
+     * @default "Select..."
+     */
+    placeholder?: string
+
+    /**
      *  optional tab index of the control
      */
     tabIndex?: string | number;
@@ -230,4 +236,11 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      value?: Option<TValue> | Options<TValue> | string | string[] | number | number[] | boolean;
 }
 
+
+
+
 export type OptionValues = string | number | boolean;
+
+export type Options<TValue = OptionValues> = Array<Option<TValue>>;
+
+export interface Option<TValue = OptionValues> { }
