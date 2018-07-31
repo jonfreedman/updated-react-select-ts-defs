@@ -15,8 +15,7 @@ export interface NoOptionArg{
 
 
 // Handlers
-export type OnBlurHandler = React.FocusEventHandler<HTMLInputElement>;
-export type OnFocusHandler = React.FocusEventHandler<HTMLInputElement>;
+export type NoOptionsHandler = (arg: NoOptionArg) => string;
 export type OnBlurHandler = React.FocusEventHandler<HTMLElement>;
 export type OnFocusHandler = React.FocusEventHandler<HTMLElement>;
 export type OnInputChangeHandler = (inputValue: string) => string;
