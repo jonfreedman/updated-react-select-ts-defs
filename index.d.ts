@@ -17,20 +17,16 @@ export interface NoOptionArg{
 // Handlers
 export type OnBlurHandler = React.FocusEventHandler<HTMLInputElement>;
 export type OnFocusHandler = React.FocusEventHandler<HTMLInputElement>;
+export type OnBlurHandler = React.FocusEventHandler<HTMLElement>;
+export type OnFocusHandler = React.FocusEventHandler<HTMLElement>;
 export type OnInputChangeHandler = (inputValue: string) => string;
-export type OnMenuScrollToBottomHandler = () => void;
+export type OnKeyDownHandler = React.KeyboardEventHandler<HTMLElement>;
 export type OnMenuCloseHandler = () => void;
 export type OnMenuOpenHandler = () => void;
-export type OnKeyDownHandler = React.KeyboardEventHandler<HTMLElement>;
-
-export type NoOptionsHandler = (arg: NoOptionArg) => string | null
+export type OnMenuScrollToBottomHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
+export type OnMenuScrollToTopHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
 
 export interface ReactSelectProps<TValue = OptionValues> extends React.Props<ReactSelectClass<TValue>>{
-    /**
-     * html id(s) of element(s) that should be used to describe this input (for assistive tech)
-     */
-    'aria-describedBy'?: string;
-
     /**
      * aria label (for assistive tech)
      */
@@ -55,9 +51,15 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
 
     /**
      * Remove focus from the input when the user selects an option (handy for dismissing the keyboard on touch devices)
-     * @default false
+     * @default isTouchCapable()
      */
     blurInputOnSelect?: boolean;
+
+    /**
+     * When the user reaches the top/bottom of the menu, prevent scroll on the scroll-parent
+     * @default !isTouchCapable()
+     */
+    captureMenuScroll?: boolean;
 
     /**
      * CSS className for the outer element
@@ -76,6 +78,31 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     closeMenuOnSelect?: boolean;
 
     /**
+     * If true, close the select menu when the user scrolls the document/body.
+     *
+     * If a function, takes a standard javascript ScrollEvent you return a boolean:
+     *
+     * true => The menu closes
+     * false => The menu stays open
+     *
+     * This is useful when you have a scrollable modal and want to portal the menu out, but want to avoid graphical issues.
+     */
+    closeMenuOnScroll?: boolean | EventListener;
+
+    /**
+     * This complex object includes all the compositional components that are used in react-select. If you wish to overwrite a component, pass in an object with the appropriate namespace.
+     * If you only wish to restyle a component, we recommend using the styles prop instead. For a list of the components that can be passed in, and the shape that will be passed to them, see the components docs
+     */
+    // components: SelectComponentsConfig
+    // TODO: How do we define this type? Maybe we need to import it?
+
+    /**
+    * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
+    * @default true
+    */
+    controlShouldRenderValue?: boolean;
+
+    /**
      * delimiter to use to join multiple values
      * @default ","
      */
@@ -86,6 +113,16 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      * @default true
      */
     escapeClearsValue?: boolean;
+
+    // TODO: Expose filter options
+
+    // TODO: Expose Format Group Label
+
+    // TODO: Expose Format Option Label
+
+    // TODO: Expose getOptionLabel
+
+    // TODO: Expose getOptionValue
 
     /**
      * Hide the selected option from the menu
@@ -101,10 +138,20 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     id?: string;
 
     /**
-     * allows for synchronization of component id's on server and client.
-     * @see https://github.com/JedWatson/react-select/pull/1105
+    * The value of the search input
+    */
+    inputValue?: string;
+
+
+    /**
+   * The id of the search input
+   */
+    inputId?: string;
+
+    /**
+     * Define an id prefix for the select components e.g. {your-id}-value
      */
-    instanceId?: string;
+    instanceId?: number | string;
 
     /**
      * whether it is possible to reset value. if enabled, an X button will appear at the right side.
@@ -125,6 +172,12 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
     isLoading?: boolean;
 
+    // TODO: Expose isOptionDisabled
+
+    // TODO: Expose isOptionDisabled
+
+    // TODO: Expose isOptionSelected
+
     /**
      * Support multiple selected options
      * @default false
@@ -143,6 +196,38 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
     isSearchable?: boolean;
 
+    // TODO: Expose loadingMessage
+
+      /**
+       * Minimum height of the menu before flipping
+       * @default 140
+       */
+    minMenuHeight?: number;
+
+    /**
+   *  Maximum height of the menu before scrolling
+   *  @default 300
+   */
+     maxMenuHeight?: number;
+
+    /**
+   * Whether the menu is open
+   * @default false
+   */
+    menuIsOpen?: boolean;
+
+    // TODO: expose MenuPlacement
+
+    // TODO: Expose menuPosition
+
+    // TODO: Expose menuPortalTarget
+
+    /**
+     * Whether to block scroll events when the menu is open
+     * @default false
+     */
+    menuShouldBlockScroll?: boolean;
+
     /**
      * Whether the menu should be scrolled into view when it opens
      * @default !isMobileDevice()
@@ -158,12 +243,14 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      * Text to display when there are no options
      * @default 'No options',
      */
-    noOptionsMessage?: NoOptionsHandler
+     noOptionsMessage?: NoOptionsHandler;
 
     /**
      * onBlur handler: function (event) {}
      */
     onBlur?: OnBlurHandler;
+
+    // TODO: Add onChange
 
     /**
      * onFocus handler: function (event) {}
@@ -191,9 +278,14 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
     onMenuOpen?: OnMenuOpenHandler;
 
     /**
-     * fires when the menu is scrolled to the bottom; can be used to paginate options
+     * Fired when the user scrolls to the bottom of the menu
      */
     onMenuScrollToBottom?: OnMenuScrollToBottomHandler;
+
+    /**
+     * Fired when the user scrolls to the top of the menu
+     */
+    onMenuScrollToTop?: OnMenuScrollToTopHandler;
 
     /**
      * Allows control of whether the menu is opened when the Select is clicked
@@ -223,7 +315,11 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      * Placeholder text for the select value
      * @default "Select..."
      */
-    placeholder?: string
+    placeholder?: string;
+
+    // TODO: Expose screenReaderStatus
+
+    // TODO: Expose styles
 
     /**
      *  optional tab index of the control
@@ -240,8 +336,6 @@ export interface ReactSelectProps<TValue = OptionValues> extends React.Props<Rea
      */
      value?: Option<TValue> | Options<TValue> | string | string[] | number | number[] | boolean;
 }
-
-
 
 
 export type OptionValues = string | number | boolean;
