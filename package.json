@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@types/react": "16.4.7",
-    "dtslint": "github:Microsoft/dtslint#production"
+    "dtslint": "github:Microsoft/dtslint#production",
+    "typescript": "3.0.1"
   }
 }
