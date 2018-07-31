@@ -1,0 +1,7 @@
+{
+  "extends": "dtslint/dtslint.json",
+  "rules": {
+    "indent": [true, "spaces", 4],
+    "no-redundant-jsdoc": false
+  }
+}

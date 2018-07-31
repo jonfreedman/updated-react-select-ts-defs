@@ -1,5 +1,6 @@
 import * as React from 'react';
-import Select, { createFilter, FilterConfig } from '.';
+import Select, { createFilter, FilterConfig, Options } from 'react-select/index';
+import Async from 'react-select/lib/Async';
 
 interface ColourOption {
     value: string;
@@ -35,10 +36,10 @@ const flavourOptions: FlavourOption[] = [
 ];
 
 interface SelectCreateFilterProps {
-    ignoreCase: boolean,
-    ignoreAccents: boolean,
-    trim: boolean,
-    matchFromStart: boolean,
+    ignoreCase: boolean;
+    ignoreAccents: boolean;
+    trim: boolean;
+    matchFromStart: boolean;
 }
 
 export class SelectCreateFilter extends React.PureComponent<SelectCreateFilterProps> {
@@ -79,7 +80,43 @@ export class CustomIsOptionDisabled extends React.PureComponent<any> {
                 isSearchable
                 name="color"
                 options={flavourOptions}
-                isOptionDisabled={(option) => option.rating !== 'safe'}
+                isOptionDisabled={(option: FlavourOption) => option.rating !== 'safe'}
+            />
+        );
+    }
+}
+
+interface WithCallbacksState {
+    inputValue: string;
+}
+
+export class WithCallbacks extends React.PureComponent<any, WithCallbacksState> {
+    state: WithCallbacksState = {
+        inputValue: ''
+    };
+
+    private readonly filterColors = (inputValue: string): Options<ColourOption> => colourOptions.filter(
+        i => i.label.toLowerCase().includes(inputValue.toLowerCase())
+    )
+
+    private readonly loadOptions = (inputValue: string, callback: (options: Options<ColourOption>) => void) => {
+        setTimeout(() => {
+            callback(this.filterColors(inputValue));
+        }, 1000);
+    }
+
+    private readonly handleInputChange = (newValue: string) => {
+        const inputValue = newValue.replace(/\W/g, '');
+        this.setState({inputValue});
+        return inputValue;
+    }
+
+    render() {
+        return (
+            <Async<ColourOption>
+                cacheOptions
+                loadOptions={this.loadOptions}
+                onInputChange={this.handleInputChange}
             />
         );
     }

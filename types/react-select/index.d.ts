@@ -1,11 +1,13 @@
 //  Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
 // TypeScript Version: 2.9
+
+// tslint:disable-next-line strict-export-declare-modifiers
 import * as React from 'react';
 
 export default class ReactSelectClass<TValue> extends React.Component<ReactSelectProps<TValue>> {
     focus(): void;
-    blur() : void;
+    blur(): void;
 }
 
 export interface NoOptionArg {
@@ -31,7 +33,7 @@ export type OptionFilter<TValue> = (option: TValue, inputValue: string) => boole
 export type OptionFormatter<TValue> = (option: TValue, context: any) => Node;
 export type OptionPredicate<TValue> = (option: TValue, value: Options<TValue>) => boolean;
 
-export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<TValue>> {
+export interface ReactSelectProps<TValue> {
     /**
      * aria label (for assistive tech)
      */
@@ -51,7 +53,7 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     /**
      * Remove the currently focused option when the user presses backspace
      * @default true
-      */
+     */
     backspaceRemoves?: boolean;
 
     /**
@@ -95,16 +97,18 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     closeMenuOnScroll?: boolean | EventListener;
 
     /**
-     * This complex object includes all the compositional components that are used in react-select. If you wish to overwrite a component, pass in an object with the appropriate namespace.
-     * If you only wish to restyle a component, we recommend using the styles prop instead. For a list of the components that can be passed in, and the shape that will be passed to them, see the components docs
+     * This complex object includes all the compositional components that are used in react-select. If you wish to overwrite
+     * a component, pass in an object with the appropriate namespace.  * If you only wish to restyle a component, we recommend
+     * using the styles prop instead. For a list of the components that can be passed in, and the shape that will be passed to
+     * them, see the components docs
      */
     // components: SelectComponentsConfig
     // TODO: How do we define this type? Maybe we need to import it?
 
     /**
-    * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
-    * @default true
-    */
+     * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
+     * @default true
+     */
     controlShouldRenderValue?: boolean;
 
     /**
@@ -172,13 +176,13 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     id?: string;
 
     /**
-    * The value of the search input
-    */
+     * The value of the search input
+     */
     inputValue?: string;
 
     /**
-   * The id of the search input
-   */
+     * The id of the search input
+     */
     inputId?: string;
 
     /**
@@ -236,15 +240,15 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     minMenuHeight?: number;
 
     /**
-   *  Maximum height of the menu before scrolling
-   *  @default 300
-   */
+     *  Maximum height of the menu before scrolling
+     *  @default 300
+     */
      maxMenuHeight?: number;
 
     /**
-   * Whether the menu is open
-   * @default false
-   */
+     * Whether the menu is open
+     * @default false
+     */
     menuIsOpen?: boolean;
 
     // TODO: expose MenuPlacement
@@ -376,11 +380,11 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
 export interface FilterConfig<TValue> {
     ignoreCase: boolean;
     ignoreAccents: boolean;
-    stringify?: (value: TValue) => string,
+    stringify?: (value: TValue) => string;
     trim: boolean;
     matchFrom: 'start' | 'any';
 }
 
-export function createFilter<TValue>(config: FilterConfig<TValue>): OptionFilter<TValue>
+export function createFilter<TValue>(config: FilterConfig<TValue>): OptionFilter<TValue>;
 
-export type Options<TValue> = Array<TValue>;
+export type Options<TValue> = TValue[];

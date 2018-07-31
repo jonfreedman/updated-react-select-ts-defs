@@ -11,6 +11,9 @@
   "engines": {
     "node": ">=7.8.0"
   },
+  "scripts": {
+    "dtslint": "dtslint types/react-select"
+  },
   "devDependencies": {
     "@types/react": "16.4.7",
     "dtslint": "github:Microsoft/dtslint#production",
