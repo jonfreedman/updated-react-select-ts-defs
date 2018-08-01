@@ -1,4 +1,4 @@
-//  Type definitions for react-select 2.0
+// Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
 // TypeScript Version: 2.9
 
@@ -10,11 +10,13 @@ export default class ReactSelectClass<TValue> extends React.Component<ReactSelec
     blur(): void;
 }
 
+export type ClassNamesState = { [key: string]: boolean } | void;
+export type ActionTypes = 'select-option' | 'deselect-option' | 'remove-value' | 'pop-value' | 'set-value' | 'clear' | 'create-option';
+
 export interface NoOptionArg {
     inputValue: string;
 }
 
-export type Action = 'select-option' | 'deselect-option' | 'remove-value' | 'pop-value' | 'set-value' | 'clear' | 'create-option';
 
 // Handlers
 export type NoOptionsHandler = (arg: NoOptionArg) => string;
@@ -33,7 +35,48 @@ export type OptionFilter<TValue> = (option: TValue, inputValue: string) => boole
 export type OptionFormatter<TValue> = (option: TValue, context: any) => Node;
 export type OptionPredicate<TValue> = (option: TValue, value: Options<TValue>) => boolean;
 
-export interface ReactSelectProps<TValue> {
+export interface CommonProps<TValue> {
+    clearValue?: () => void;
+
+    /**
+     * CSS className for the outer element
+     */
+    className?: string;
+
+    // TODO: Can't figure out what this is doing or what the arguments should be called
+    cx?: ( arg1 : (string | undefined), arg2: (ClassNamesState | undefined), arg3: (string | undefined)) => (string | undefined);
+
+    // TODO: Pull this out in to it's own props interface
+    /**
+     * Get the styles of a particular part of the select. Pass in the name of the
+     * property as the first argument, and the current props as the second argument.
+     * See the `styles` object for the properties available.
+     */
+    getStyles?: (key: string, props: any) => {},
+
+    getValue?: () => TValue,
+
+    hasValue?: boolean;
+    /**
+     * Support multiple selected options
+     * @default false
+     */
+    isMulti?: boolean;
+
+    /**
+     * Array of options that populate the select menu
+     * @default []
+     */
+    options?: Options<TValue>;
+
+    selectOption?: (newValue: TValue) => void;
+
+    selectProps?: any;
+
+    setValue?: (newValue: TValue, action: ActionTypes) => void;
+}
+
+export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
     /**
      * aria label (for assistive tech)
      */
@@ -53,7 +96,7 @@ export interface ReactSelectProps<TValue> {
     /**
      * Remove the currently focused option when the user presses backspace
      * @default true
-     */
+      */
     backspaceRemoves?: boolean;
 
     /**
@@ -67,11 +110,6 @@ export interface ReactSelectProps<TValue> {
      * @default !isTouchCapable()
      */
     captureMenuScroll?: boolean;
-
-    /**
-     * CSS className for the outer element
-     */
-    className?: string;
 
     /**
      * classNamePrefix attribute used as a base for inner component classNames
@@ -106,9 +144,9 @@ export interface ReactSelectProps<TValue> {
     // TODO: How do we define this type? Maybe we need to import it?
 
     /**
-     * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
-     * @default true
-     */
+    * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
+    * @default true
+    */
     controlShouldRenderValue?: boolean;
 
     /**
@@ -176,13 +214,14 @@ export interface ReactSelectProps<TValue> {
     id?: string;
 
     /**
-     * The value of the search input
-     */
+    * The value of the search input
+    */
     inputValue?: string;
 
+
     /**
-     * The id of the search input
-     */
+   * The id of the search input
+   */
     inputId?: string;
 
     /**
@@ -214,12 +253,6 @@ export interface ReactSelectProps<TValue> {
     isOptionSelected?: OptionPredicate<TValue>;
 
     /**
-     * Support multiple selected options
-     * @default false
-     */
-    isMulti?: boolean;
-
-    /**
      * Is the select direction right-to-left
      * @default false
      */
@@ -240,15 +273,15 @@ export interface ReactSelectProps<TValue> {
     minMenuHeight?: number;
 
     /**
-     *  Maximum height of the menu before scrolling
-     *  @default 300
-     */
+   *  Maximum height of the menu before scrolling
+   *  @default 300
+   */
      maxMenuHeight?: number;
 
     /**
-     * Whether the menu is open
-     * @default false
-     */
+   * Whether the menu is open
+   * @default false
+   */
     menuIsOpen?: boolean;
 
     // TODO: expose MenuPlacement
@@ -336,12 +369,6 @@ export interface ReactSelectProps<TValue> {
      * @default false
      */
     openMenuOnFocus?: boolean;
-
-    /**
-     * array of Select options
-     * @default false
-     */
-    options?: Options<TValue>;
 
     /**
      * number of options to jump when using page up/down keys
