@@ -470,7 +470,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
 
 // Components
 export namespace components {
-    function SingleValue<TValue>(props: SingleValueProps<TValue>): JSX.Element;
+    function SingleValue(props: SingleValueProps<any>): JSX.Element;
 }
 
 // Advanced

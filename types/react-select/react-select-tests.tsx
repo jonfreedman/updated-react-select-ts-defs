@@ -140,7 +140,7 @@ const SingleValue = ({children, ...props}: SingleValueProps<ColourOption>): JSX.
 export default class CustomControl extends React.PureComponent<any> {
     render() {
         return (
-            <Select
+            <Select<ColourOption>
                 defaultValue={colourOptions[0]}
                 isClearable
                 styles={{
