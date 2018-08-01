@@ -26,6 +26,15 @@ export type ActionTypes =
     | 'clear'
     | 'create-option';
 
+export type MenuPlacement =
+    'auto'
+    | 'bottom'
+    | 'top';
+
+export type MenuPosition =
+    'absolute'
+    | 'fixed';
+
 export interface NoOptionArg {
     inputValue: string;
 }
@@ -33,6 +42,28 @@ export interface NoOptionArg {
 export type CSSProperties = CSS.Properties & CSS.PropertiesHyphen;
 
 // Components
+export interface SelectContainerProps<TValue> extends CommonProps<TValue> {
+    /**
+     * Whether this is disabled
+     */
+    isDisabled: boolean;
+
+    /**
+     *  Whether the text in the select is indented from right to left
+     */
+    isRtl: boolean;
+
+    /**
+     * The children to be rendered
+     */
+    children: React.ReactNode;
+
+    /**
+     * Props passed to the wrapping element for the group
+     */
+    innerProps: { onKeyDown: React.KeyboardEventHandler };
+}
+
 export interface SingleValueProps<TValue> extends CommonProps<TValue> {
     /**
      * Whether this is disabled
@@ -55,8 +86,27 @@ export interface SingleValueProps<TValue> extends CommonProps<TValue> {
     innerProps: any;
 }
 
+export interface ValueContainerProps<TValue> extends CommonProps<TValue> {
+    /**
+     * Set when the value container should hold multiple values
+     */
+    isMulti: boolean;
+
+    /**
+     * Whether the value container currently holds a value
+     */
+    hasValue: boolean;
+
+    /**
+     * The children to be rendered
+     */
+    children: React.ReactNode;
+}
+
 export interface SelectComponentsConfig<TValue> {
-    SingleValue: React.ComponentType<SingleValueProps<TValue>>;
+    SelectContainer?: React.ComponentType<SelectContainerProps<TValue>>;
+    SingleValue?: React.ComponentType<SingleValueProps<TValue>>;
+    ValueContainer?: React.ComponentType<ValueContainerProps<TValue>>;
 }
 
 // Styles
@@ -313,8 +363,14 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      */
     isLoading?: boolean;
 
+    /**
+     * Override the built-in logic to detect whether an option is disabled
+     */
     isOptionDisabled?: OptionPredicate<TValue>;
 
+    /**
+     * Override the built-in logic to detect whether an option is selected
+     */
     isOptionSelected?: OptionPredicate<TValue>;
 
     /**
@@ -329,7 +385,10 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      */
     isSearchable?: boolean;
 
-    // TODO: Expose loadingMessage
+    /**
+     * Async: Text to display when loading options
+     */
+    loadingMessage?: (inputValue: string) => string | null;
 
     /**
      * Minimum height of the menu before flipping
@@ -349,9 +408,15 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      */
     menuIsOpen?: boolean;
 
-    // TODO: expose MenuPlacement
+    /**
+     * Default placement of the menu in relation to the control. 'auto' will flip when there isn't enough space below the control.
+     */
+    menuPlacement?: MenuPlacement;
 
-    // TODO: Expose menuPosition
+    /**
+     * The CSS position value of the menu, when "fixed" extra layout management is required.
+     */
+    menuPosition?: MenuPosition;
 
     // TODO: Expose menuPortalTarget
 
@@ -462,15 +527,18 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
     tabSelectsValue?: boolean;
 
     /**
-     * TODO: are the raw types still valid?
-     * initial field value
+     * The value of the select; reflected by the selected option
      */
-    value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
+    value?: TValue | Options<TValue> | null;
 }
 
 // Components
 export namespace components {
+    function SelectContainer(props: SelectContainerProps<any>): JSX.Element;
+
     function SingleValue(props: SingleValueProps<any>): JSX.Element;
+
+    function ValueContainer(props: ValueContainerProps<any>): JSX.Element;
 }
 
 // Advanced

@@ -1,5 +1,13 @@
 import * as React from 'react';
-import Select, { components, createFilter, FilterConfig, Options, SingleValueProps } from 'react-select';
+import Select, {
+    components,
+    createFilter,
+    FilterConfig,
+    Options,
+    SelectContainerProps,
+    SingleValueProps,
+    ValueContainerProps
+} from 'react-select';
 import Async from 'react-select/lib/Async';
 
 interface ColourOption {
@@ -35,129 +43,194 @@ const flavourOptions: FlavourOption[] = [
     {value: 'salted-caramel', label: 'Salted Caramel', rating: 'crazy'},
 ];
 
-interface SelectCreateFilterProps {
-    ignoreCase: boolean;
-    ignoreAccents: boolean;
-    trim: boolean;
-    matchFromStart: boolean;
-}
+// Select tests
+(() => {
+    interface SelectCreateFilterProps {
+        ignoreCase: boolean;
+        ignoreAccents: boolean;
+        trim: boolean;
+        matchFromStart: boolean;
+    }
 
-export class SelectCreateFilter extends React.PureComponent<SelectCreateFilterProps> {
-    render() {
-        const {
-            ignoreCase,
-            ignoreAccents,
-            trim,
-            matchFromStart,
-        } = this.props;
+    class SelectCreateFilter extends React.PureComponent<SelectCreateFilterProps> {
+        render() {
+            const {
+                ignoreCase,
+                ignoreAccents,
+                trim,
+                matchFromStart,
+            } = this.props;
 
-        const filterConfig: FilterConfig<ColourOption> = {
-            ignoreCase,
-            ignoreAccents,
-            trim,
-            matchFrom: matchFromStart ? 'start' : 'any',
+            const filterConfig: FilterConfig<ColourOption> = {
+                ignoreCase,
+                ignoreAccents,
+                trim,
+                matchFrom: matchFromStart ? 'start' : 'any',
+            };
+
+            return (
+                <Select<ColourOption>
+                    defaultValue={colourOptions[0]}
+                    isClearable
+                    isSearchable
+                    name="color"
+                    options={colourOptions}
+                    filterOption={createFilter(filterConfig)}
+                />
+            );
+        }
+    }
+
+    class CustomIsOptionDisabled extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select<FlavourOption>
+                    defaultValue={flavourOptions[0]}
+                    isClearable
+                    isSearchable
+                    name="color"
+                    options={flavourOptions}
+                    isOptionDisabled={(option: FlavourOption) => option.rating !== 'safe'}
+                />
+            );
+        }
+    }
+});
+
+// Async tests
+(() => {
+    interface WithCallbacksState {
+        inputValue: string;
+    }
+
+    class WithCallbacks extends React.PureComponent<any, WithCallbacksState> {
+        state: WithCallbacksState = {
+            inputValue: ''
         };
 
-        return (
-            <Select<ColourOption>
-                defaultValue={colourOptions[0]}
-                isClearable
-                isSearchable
-                name="color"
-                options={colourOptions}
-                filterOption={createFilter(filterConfig)}
-            />
-        );
+        private readonly filterColors = (inputValue: string): Options<ColourOption> => colourOptions.filter(
+            i => i.label.toLowerCase().includes(inputValue.toLowerCase())
+        )
+
+        private readonly loadOptions = (inputValue: string, callback: (options: Options<ColourOption>) => void) => {
+            setTimeout(() => {
+                callback(this.filterColors(inputValue));
+            }, 1000);
+        }
+
+        private readonly handleInputChange = (newValue: string) => {
+            const inputValue = newValue.replace(/\W/g, '');
+            this.setState({inputValue});
+            return inputValue;
+        }
+
+        render() {
+            return (
+                <Async<ColourOption>
+                    cacheOptions
+                    loadOptions={this.loadOptions}
+                    onInputChange={this.handleInputChange}
+                />
+            );
+        }
     }
-}
+});
 
-export class CustomIsOptionDisabled extends React.PureComponent<any> {
-    render() {
+// Component tests
+(() => {
+    const SelectContainer = ({children, ...props}: SelectContainerProps<ColourOption>): JSX.Element => {
         return (
-            <Select<FlavourOption>
-                defaultValue={flavourOptions[0]}
-                isClearable
-                isSearchable
-                name="color"
-                options={flavourOptions}
-                isOptionDisabled={(option: FlavourOption) => option.rating !== 'safe'}
-            />
+            <div className='tooltip'>
+                <div className='tooltipText'>customise your select container</div>
+                <components.SelectContainer {...props}>
+                    {children}
+                </components.SelectContainer>
+            </div>
         );
-    }
-}
-
-interface WithCallbacksState {
-    inputValue: string;
-}
-
-export class WithCallbacks extends React.PureComponent<any, WithCallbacksState> {
-    state: WithCallbacksState = {
-        inputValue: ''
     };
 
-    private readonly filterColors = (inputValue: string): Options<ColourOption> => colourOptions.filter(
-        i => i.label.toLowerCase().includes(inputValue.toLowerCase())
-    )
-
-    private readonly loadOptions = (inputValue: string, callback: (options: Options<ColourOption>) => void) => {
-        setTimeout(() => {
-            callback(this.filterColors(inputValue));
-        }, 1000);
+    class CustomSelectContainerControl extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select
+                    closeMenuOnSelect={false}
+                    components={{SelectContainer}}
+                    styles={{
+                        container: (base) => ({...base, backgroundColor: colourOptions[2].color, padding: 5})
+                    }}
+                    options={colourOptions}
+                />
+            );
+        }
     }
 
-    private readonly handleInputChange = (newValue: string) => {
-        const inputValue = newValue.replace(/\W/g, '');
-        this.setState({inputValue});
-        return inputValue;
-    }
-
-    render() {
+    const SingleValue = ({children, ...props}: SingleValueProps<ColourOption>): JSX.Element => {
+        const boxStyle = {
+            height: '10px',
+            width: '10px',
+            margin: '4px 5px 0 0',
+            background: props.data.color
+        };
         return (
-            <Async<ColourOption>
-                cacheOptions
-                loadOptions={this.loadOptions}
-                onInputChange={this.handleInputChange}
-            />
+            <components.SingleValue {...props}>
+                <div style={boxStyle}/>
+                {children}
+            </components.SingleValue>
         );
-    }
-}
-
-const SingleValue = ({children, ...props}: SingleValueProps<ColourOption>): JSX.Element => {
-    const boxStyle = {
-        height: '10px',
-        width: '10px',
-        margin: '4px 5px 0 0',
-        background: props.data.color
     };
-    return (
-        <components.SingleValue {...props}>
-            <div style={boxStyle} />
+
+    class CustomSingleValueControl extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select<ColourOption>
+                    defaultValue={colourOptions[0]}
+                    isClearable
+                    styles={{
+                        singleValue: (base) => ({
+                            ...base,
+                            padding: 5,
+                            borderRadius: 5,
+                            background: colourOptions[2].color,
+                            color: 'white',
+                            display: 'flex'
+                        })
+                    }}
+                    components={{SingleValue}}
+                    isSearchable
+                    name="color"
+                    options={colourOptions}
+                />
+            );
+        }
+    }
+
+    const ValueContainer = ({children, ...props}: ValueContainerProps<ColourOption>): JSX.Element => (
+        <components.ValueContainer {...props}>
             {children}
-        </components.SingleValue>
+        </components.ValueContainer>
     );
-};
 
-export default class CustomControl extends React.PureComponent<any> {
-    render() {
-        return (
-            <Select<ColourOption>
-                defaultValue={colourOptions[0]}
-                isClearable
-                styles={{
-                    singleValue: (base) => ({
-                        ...base,
-                        padding: 5,
-                        borderRadius: 5,
-                        background: colourOptions[2].color,
-                        color: 'white',
-                        display: 'flex'
-                    })
-                }}
-                components={{SingleValue}}
-                isSearchable
-                name="color"
-                options={colourOptions}
-            />
-        );
+    class CustomValueContainerControl extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select
+                    defaultValue={colourOptions[0]}
+                    isClearable
+                    styles={{
+                        singleValue: (base) => ({...base, color: 'white'}),
+                        valueContainer: (base) => ({
+                            ...base,
+                            background: colourOptions[2].color,
+                            color: 'white',
+                            width: '100%'
+                        }),
+                    }}
+                    components={{ValueContainer}}
+                    isSearchable
+                    name="color"
+                    options={colourOptions}
+                />
+            );
+        }
     }
-}
+});
