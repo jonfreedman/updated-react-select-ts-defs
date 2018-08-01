@@ -179,7 +179,6 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     */
     inputValue?: string;
     
-    
     /**
     * The id of the search input
     */

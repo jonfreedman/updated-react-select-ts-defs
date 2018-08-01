@@ -4,7 +4,10 @@ import Node from 'react';
 import { Options, ReactSelectProps } from '..';
 
 
-export class Creatable<TValue> extends React.Component<ReactCreatableSelectProps<TValue>> { }
+export class Creatable<TValue> extends React.Component<ReactCreatableSelectProps<TValue>> { 
+    focus(): void;
+    blur(): void;
+}
 
 export interface ReactCreatableSelectProps<TValue> extends ReactSelectProps<TValue> { 
     /**
