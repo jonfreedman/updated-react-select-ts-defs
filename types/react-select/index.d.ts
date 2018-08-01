@@ -207,7 +207,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      * using the styles prop instead. For a list of the components that can be passed in, and the shape that will be passed to
      * them, see the components docs
      */
-    components?: SelectComponentsConfig<TValue>
+    components?: SelectComponentsConfig<TValue>;
 
     /**
      * Whether the value of the select, e.g. SingleValue, should be displayed in the control.

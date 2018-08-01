@@ -122,7 +122,7 @@ export class WithCallbacks extends React.PureComponent<any, WithCallbacksState> 
     }
 }
 
-const SingleValue = ({children, ...props}: SingleValueProps<ColourOption>):JSX.Element => {
+const SingleValue = ({children, ...props}: SingleValueProps<ColourOption>): JSX.Element => {
     const boxStyle = {
         height: '10px',
         width: '10px',
