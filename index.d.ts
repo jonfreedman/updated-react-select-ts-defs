@@ -1,6 +1,6 @@
 // Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
-// TypeScript Version: 3.0
+// TypeScript Version: 2.9
 import * as React from 'react';
 
 
