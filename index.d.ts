@@ -44,11 +44,11 @@ export interface CommonProps<TValue>{
      * property as the first argument, and the current props as the second argument.
      * See the `styles` object for the properties available.
      */
-    getStyles: (key: string, props: any) => {},
+    getStyles?: (key: string, props: any) => {},
     
-    getValue: () => TValue,
+    getValue?: () => TValue,
     
-    hasValue: boolean;
+    hasValue?: boolean;
     /**
     * Support multiple selected options
     * @default false
@@ -61,11 +61,11 @@ export interface CommonProps<TValue>{
     */
     options?: Options<TValue>;
     
-    selectOption: (newValue: TValue) => void;
+    selectOption?: (newValue: TValue) => void;
     
-    selectProps: any;
+    selectProps?: any;
     
-    setValue(newValue: TValue, action: ActionTypes): void;
+    setValue?: (newValue: TValue, action: ActionTypes) => void;
 }
 
 export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<TValue>>, CommonProps<TValue>{
