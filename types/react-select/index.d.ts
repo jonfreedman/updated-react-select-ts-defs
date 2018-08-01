@@ -3,6 +3,8 @@
 // TypeScript Version: 2.9
 
 // tslint:disable-next-line strict-export-declare-modifiers
+import * as CSS from 'csstype';
+// tslint:disable-next-line strict-export-declare-modifiers
 import * as React from 'react';
 
 export default class ReactSelectClass<TValue> extends React.Component<ReactSelectProps<TValue>> {
@@ -26,6 +28,61 @@ export type ActionTypes =
 
 export interface NoOptionArg {
     inputValue: string;
+}
+
+export type CSSProperties = CSS.Properties & CSS.PropertiesHyphen;
+
+// Components
+export interface SingleValueProps<TValue> extends CommonProps<TValue> {
+    /**
+     * Whether this is disabled
+     */
+    isDisabled: boolean;
+
+    /**
+     * The children to be rendered
+     */
+    children: React.ReactNode;
+
+    /**
+     * The data of the selected option rendered in the Single Value component
+     */
+    data: TValue;
+
+    /**
+     * Props passed to the wrapping element for the group
+     */
+    innerProps: any;
+}
+
+export interface SelectComponentsConfig<TValue> {
+    SingleValue: React.ComponentType<SingleValueProps<TValue>>;
+}
+
+// Styles
+export interface StylesConfig {
+    clearIndicator?: (props: any) => CSSProperties;
+    container?: (props: any) => CSSProperties;
+    control?: (props: any) => CSSProperties;
+    dropdownIndicator?: (props: any) => CSSProperties;
+    group?: (props: any) => CSSProperties;
+    groupHeading?: (props: any) => CSSProperties;
+    indicatorsContainer?: (props: any) => CSSProperties;
+    indicatorSeparator?: (props: any) => CSSProperties;
+    input?: (props: any) => CSSProperties;
+    loadingIndicator?: (props: any) => CSSProperties;
+    loadingMessageCSS?: (props: any) => CSSProperties;
+    menu?: (props: any) => CSSProperties;
+    menuList?: (props: any) => CSSProperties;
+    menuPortal?: (props: any) => CSSProperties;
+    multiValue?: (props: any) => CSSProperties;
+    multiValueLabel?: (props: any) => CSSProperties;
+    multiValueRemove?: (props: any) => CSSProperties;
+    noOptionsMessageCSS?: (props: any) => CSSProperties;
+    option?: (props: any) => CSSProperties;
+    placeholder?: (props: any) => CSSProperties;
+    singleValue?: (props: any) => CSSProperties;
+    valueContainer?: (props: any) => CSSProperties;
 }
 
 // Handlers
@@ -150,8 +207,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      * using the styles prop instead. For a list of the components that can be passed in, and the shape that will be passed to
      * them, see the components docs
      */
-    // components: SelectComponentsConfig
-    // TODO: How do we define this type? Maybe we need to import it?
+    components?: SelectComponentsConfig<TValue>
 
     /**
      * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
@@ -393,7 +449,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
 
     // TODO: Expose screenReaderStatus
 
-    // TODO: Expose styles
+    styles?: StylesConfig;
 
     /**
      *  optional tab index of the control
@@ -410,6 +466,11 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      * initial field value
      */
     value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
+}
+
+// Components
+export namespace components {
+    export function SingleValue<TValue>(props: SingleValueProps<TValue>): JSX.Element;
 }
 
 // Advanced
