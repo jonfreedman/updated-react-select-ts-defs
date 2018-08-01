@@ -1,4 +1,4 @@
-// Type definitions for react-select 2.0
+//  Type definitions for react-select 2.0
 // Project: https://github.com/JedWatson/react-select
 // TypeScript Version: 2.9
 
@@ -7,23 +7,33 @@ import * as React from 'react';
 
 export default class ReactSelectClass<TValue> extends React.Component<ReactSelectProps<TValue>> {
     focus(): void;
+
     blur(): void;
 }
 
-export type ClassNamesState = { [key: string]: boolean } | void;
-export type ActionTypes = 'select-option' | 'deselect-option' | 'remove-value' | 'pop-value' | 'set-value' | 'clear' | 'create-option';
+export interface ClassNamesState {
+    [key: string]: boolean;
+}
+
+export type ActionTypes =
+    'select-option'
+    | 'deselect-option'
+    | 'remove-value'
+    | 'pop-value'
+    | 'set-value'
+    | 'clear'
+    | 'create-option';
 
 export interface NoOptionArg {
     inputValue: string;
 }
 
-
 // Handlers
 export type NoOptionsHandler = (arg: NoOptionArg) => string;
 export type OnBlurHandler = React.FocusEventHandler<HTMLElement>;
-export type OnChangeHandler<TValue> = (newValue: TValue, actionMeta: Action) => void;
+export type OnChangeHandler<TValue> = (newValue: TValue, actionMeta: ActionTypes) => void;
 export type OnFocusHandler = React.FocusEventHandler<HTMLElement>;
-export type OnInputChangeHandler = (inputValue: string, actionMeta: Action) => string;
+export type OnInputChangeHandler = (inputValue: string, actionMeta: ActionTypes) => string;
 export type OnKeyDownHandler = React.KeyboardEventHandler<HTMLElement>;
 export type OnMenuCloseHandler = () => void;
 export type OnMenuOpenHandler = () => void;
@@ -44,7 +54,7 @@ export interface CommonProps<TValue> {
     className?: string;
 
     // TODO: Can't figure out what this is doing or what the arguments should be called
-    cx?: ( arg1 : (string | undefined), arg2: (ClassNamesState | undefined), arg3: (string | undefined)) => (string | undefined);
+    cx?: (arg1: (string | undefined), arg2: (ClassNamesState | undefined), arg3: (string | undefined)) => (string | undefined);
 
     // TODO: Pull this out in to it's own props interface
     /**
@@ -52,9 +62,9 @@ export interface CommonProps<TValue> {
      * property as the first argument, and the current props as the second argument.
      * See the `styles` object for the properties available.
      */
-    getStyles?: (key: string, props: any) => {},
+    getStyles?: (key: string, props: any) => {};
 
-    getValue?: () => TValue,
+    getValue?: () => TValue;
 
     hasValue?: boolean;
     /**
@@ -96,7 +106,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
     /**
      * Remove the currently focused option when the user presses backspace
      * @default true
-      */
+     */
     backspaceRemoves?: boolean;
 
     /**
@@ -144,9 +154,9 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
     // TODO: How do we define this type? Maybe we need to import it?
 
     /**
-    * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
-    * @default true
-    */
+     * Whether the value of the select, e.g. SingleValue, should be displayed in the control.
+     * @default true
+     */
     controlShouldRenderValue?: boolean;
 
     /**
@@ -214,14 +224,13 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
     id?: string;
 
     /**
-    * The value of the search input
-    */
+     * The value of the search input
+     */
     inputValue?: string;
 
-
     /**
-   * The id of the search input
-   */
+     * The id of the search input
+     */
     inputId?: string;
 
     /**
@@ -266,22 +275,22 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
 
     // TODO: Expose loadingMessage
 
-      /**
-       * Minimum height of the menu before flipping
-       * @default 140
-       */
+    /**
+     * Minimum height of the menu before flipping
+     * @default 140
+     */
     minMenuHeight?: number;
 
     /**
-   *  Maximum height of the menu before scrolling
-   *  @default 300
-   */
-     maxMenuHeight?: number;
+     *  Maximum height of the menu before scrolling
+     *  @default 300
+     */
+    maxMenuHeight?: number;
 
     /**
-   * Whether the menu is open
-   * @default false
-   */
+     * Whether the menu is open
+     * @default false
+     */
     menuIsOpen?: boolean;
 
     // TODO: expose MenuPlacement
@@ -311,7 +320,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      * Text to display when there are no options
      * @default 'No options',
      */
-     noOptionsMessage?: NoOptionsHandler;
+    noOptionsMessage?: NoOptionsHandler;
 
     /**
      * onBlur handler: function (event) {}
@@ -400,7 +409,7 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
      * TODO: are the raw types still valid?
      * initial field value
      */
-     value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
+    value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
 }
 
 // Advanced
