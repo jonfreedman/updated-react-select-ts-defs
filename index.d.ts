@@ -9,9 +9,9 @@ export default class ReactSelectClass<TValue> extends React.Component<ReactSelec
     blur(): void;
 }
 
-// TODO: What does this represent?
-// export type ClassNamesState = { [string]: boolean } | void;
+export type ClassNamesState = { [key: string]: boolean } | void;
 export type ActionTypes = 'select-option' | 'deselect-option' | 'remove-value' | 'pop-value' | 'set-value' | 'clear' | 'create-option';
+
 
 export interface NoOptionArg {
     inputValue: string;
@@ -28,7 +28,7 @@ export type OnMenuOpenHandler = () => void;
 export type OnMenuScrollToBottomHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
 export type OnMenuScrollToTopHandler = (e: React.SyntheticEvent<HTMLElement>) => void;
 
-export interface CommonProps<TValue>{
+export interface CommonProps{
     clearValue?: () => void;
     
     /**
@@ -36,9 +36,10 @@ export interface CommonProps<TValue>{
     */
     className?: string;
     
-    // TODO: Can't figure out what this is doing
-    // cx: ((?string | null), (ClassNamesState | void), (string | void)) => (string | void);
+    // TODO: Can't figure out what this is doing or what the arguments should be called
+    cx?: ( arg1 : (string | undefined), arg2: (ClassNamesState | undefined), arg3: (string | undefined)) => (string | undefined);
     
+    // TODO: Pull this out in to it's own props interface
     /**
      * Get the styles of a particular part of the select. Pass in the name of the
      * property as the first argument, and the current props as the second argument.
@@ -46,7 +47,7 @@ export interface CommonProps<TValue>{
      */
     getStyles?: (key: string, props: any) => {},
     
-    getValue?: () => TValue,
+    getValue?: () => Option,
     
     hasValue?: boolean;
     /**
@@ -59,16 +60,16 @@ export interface CommonProps<TValue>{
     * Array of options that populate the select menu
     * @default []
     */
-    options?: Options<TValue>;
+    options?: Options;
     
-    selectOption?: (newValue: TValue) => void;
+    selectOption?: (newValue: Option) => void;
     
     selectProps?: any;
     
-    setValue?: (newValue: TValue, action: ActionTypes) => void;
+    setValue?: (newValue: Option, action: ActionTypes) => void;
 }
 
-export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<TValue>>, CommonProps<TValue>{
+export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<TValue>>, CommonProps{
     /**
     * aria label (for assistive tech)
     */
@@ -358,7 +359,7 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
     /**
     * initial field value
     */
-    value?: TValue | Options<TValue> | string | string[] | number | number[] | boolean;
+    value?: Option | Options | string | string[] | number | number[] | boolean;
 }
 
 
@@ -368,5 +369,5 @@ export interface ReactAsyncSelectProps<TValue> extends ReactSelectProps<TValue> 
 }
 
 
-export type Options<TValue> = TValue[];
-
+export interface Option { [key: string]: any }
+export interface Options extends Array<Option>{}
