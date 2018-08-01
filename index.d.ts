@@ -10,13 +10,9 @@ export default class ReactSelectClass<TValue> extends React.Component<ReactSelec
 }
 
 
-export class Creatable<TValue> extends React.Component<ReactCreatableSelectProps<TValue>> { }
-export class AsyncCreatable<TValue> extends React.Component<ReactAsyncCreatableSelectProps<TValue>> { }
-
 export interface NoOptionArg {
     inputValue: string;
 }
-
 
 // Handlers
 export type NoOptionsHandler = (arg: NoOptionArg) => string;
@@ -340,15 +336,13 @@ export interface ReactSelectProps<TValue> extends React.Props<ReactSelectClass<T
      value?: Option<TValue> | Options<TValue> | string | string[] | number | number[] | boolean;
 }
 
-export interface ReactCreatableSelectProps<TValue> extends ReactSelectProps<TValue> { 
-    // TODO: implement
-}
+
 
 export interface ReactAsyncSelectProps<TValue = OptionValues> extends ReactSelectProps<TValue> {
     // TODO: Implement
 }
 
-export type ReactAsyncCreatableSelectProps<TValue = OptionValues> = ReactAsyncSelectProps<TValue> & ReactCreatableSelectProps<TValue>;
+
 
 export type OptionValues = string | number | boolean;
 
