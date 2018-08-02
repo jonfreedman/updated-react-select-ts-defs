@@ -42,6 +42,57 @@ export interface NoOptionArg {
 export type CSSProperties = CSS.Properties & CSS.PropertiesHyphen;
 
 // Components
+export interface OptionProps<TValue> extends CommonProps<TValue> {
+    /**
+     * Whether this is disabled
+     */
+    isDisabled: boolean;
+
+    /**
+     * Whether the option is focused.
+     */
+    isFocused: boolean;
+
+    /**
+     * Whether the option is selected.
+     */
+    isSelected: boolean;
+
+    /**
+     * The children to be rendered
+     */
+    children: React.ReactNode;
+
+    innerRef: React.Ref<any>;
+
+    /**
+     * Props passed to the wrapping element for the group
+     */
+    innerProps: {
+        id: string;
+        key: string;
+        onClick: React.MouseEventHandler;
+        onMouseOver: React.MouseEventHandler;
+        tabIndex: number;
+    };
+
+    label: string;
+
+    type: 'option';
+}
+
+export interface PlaceholderProps<TValue> extends CommonProps<TValue> {
+    /**
+     * The children to be rendered
+     */
+    children: React.ReactNode;
+
+    /**
+     * Props passed to the wrapping element for the group
+     */
+    innerProps: { [key: string]: any };
+}
+
 export interface SelectContainerProps<TValue> extends CommonProps<TValue> {
     /**
      * Whether this is disabled
@@ -104,6 +155,8 @@ export interface ValueContainerProps<TValue> extends CommonProps<TValue> {
 }
 
 export interface SelectComponentsConfig<TValue> {
+    Option?: React.ComponentType<OptionProps<TValue>>;
+    Placeholder?: React.ComponentType<PlaceholderProps<TValue>>;
     SelectContainer?: React.ComponentType<SelectContainerProps<TValue>>;
     SingleValue?: React.ComponentType<SingleValueProps<TValue>>;
     ValueContainer?: React.ComponentType<ValueContainerProps<TValue>>;
@@ -534,6 +587,10 @@ export interface ReactSelectProps<TValue> extends CommonProps<TValue> {
 
 // Components
 export namespace components {
+    function Option(props: OptionProps<any>): JSX.Element;
+
+    function Placeholder(props: PlaceholderProps<any>): JSX.Element;
+
     function SelectContainer(props: SelectContainerProps<any>): JSX.Element;
 
     function SingleValue(props: SingleValueProps<any>): JSX.Element;

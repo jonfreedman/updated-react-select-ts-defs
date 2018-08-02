@@ -4,6 +4,8 @@ import Select, {
     createFilter,
     FilterConfig,
     Options,
+    OptionProps,
+    PlaceholderProps,
     SelectContainerProps,
     SingleValueProps,
     ValueContainerProps
@@ -138,6 +140,62 @@ const flavourOptions: FlavourOption[] = [
 
 // Component tests
 (() => {
+    const Option = (props: OptionProps<ColourOption>): JSX.Element => {
+        return (
+            <div className='tooltip'>
+                <div className='tooltipText'>customise your option component!</div>
+                <components.Option {...props}/>
+            </div>
+        );
+    };
+
+    class CustomOptionControl extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select
+                    closeMenuOnSelect={false}
+                    components={{Option}}
+                    styles={{
+                        option: (base) => ({
+                            ...base,
+                            border: `1px dotted ${colourOptions[2].color}`,
+                            height: '100%'
+                        })
+                    }}
+                    defaultValue={colourOptions[4]}
+                    options={colourOptions}
+                />
+            );
+        }
+    }
+
+    const Placeholder = (props: PlaceholderProps<ColourOption>): JSX.Element => {
+        return (
+            <components.Placeholder {...props}/>
+        );
+    };
+
+    class CustomPlaceholderControl extends React.PureComponent<any> {
+        render() {
+            return (
+                <Select
+                    closeMenuOnSelect={false}
+                    components={{Placeholder}}
+                    placeholder={'custom placeholder component'}
+                    styles={{
+                        placeholder: (base) => ({
+                            ...base,
+                            fontSize: '1em',
+                            color: colourOptions[2].color,
+                            fontWeight: 400
+                        })
+                    }}
+                    options={colourOptions}
+                />
+            );
+        }
+    }
+
     const SelectContainer = ({children, ...props}: SelectContainerProps<ColourOption>): JSX.Element => {
         return (
             <div className='tooltip'>
